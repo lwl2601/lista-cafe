@@ -1,4 +1,5 @@
-FROM ubuntu:20.04
+# Estágio de build
+FROM ubuntu:20.04 as builder
 
 # Instalar dependências
 RUN apt-get update && apt-get install -y \
@@ -22,17 +23,27 @@ RUN flutter doctor
 # Configurar diretório de trabalho
 WORKDIR /app
 
-# Copiar arquivos do projeto
-COPY . .
-
-# Instalar dependências
+# Copiar arquivos de dependência primeiro para aproveitar o cache
+COPY pubspec.yaml .
 RUN flutter pub get
 
-# Construir aplicação web
-RUN flutter build web
+# Copiar o resto do código
+COPY . .
+
+# Construir aplicação web em modo release
+RUN flutter build web --release
+
+# Estágio de produção
+FROM nginx:stable-alpine
+
+# Copiar os arquivos construídos do estágio anterior
+COPY --from=builder /app/build/web /usr/share/nginx/html
+
+# Configuração do nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expor porta
-EXPOSE 8080
+EXPOSE 80
 
-# Comando para iniciar o servidor
-CMD ["flutter", "run", "-d", "web-server", "--web-port", "8080", "--web-hostname", "0.0.0.0"]
+# Comando para iniciar o nginx
+CMD ["nginx", "-g", "daemon off;"]
