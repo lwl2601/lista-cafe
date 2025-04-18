@@ -1,6 +1,10 @@
 # Estágio de build
 FROM ubuntu:20.04 as builder
 
+# Configurar variáveis de ambiente para evitar prompts interativos
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Sao_Paulo
+
 # Instalar dependências
 RUN apt-get update && apt-get install -y \
     curl \
@@ -11,7 +15,11 @@ RUN apt-get update && apt-get install -y \
     libglu1-mesa \
     openjdk-8-jdk \
     wget \
+    tzdata \
     && rm -rf /var/lib/apt/lists/*
+
+# Configurar o fuso horário
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Instalar Flutter
 RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter
