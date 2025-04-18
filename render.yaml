@@ -6,3 +6,8 @@ services:
     dockerfilePath: ./Dockerfile
     healthCheckPath: /
     autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8080
+    buildCommand: flutter build web
+    startCommand: flutter run -d web-server --web-port $PORT --web-hostname 0.0.0.0
