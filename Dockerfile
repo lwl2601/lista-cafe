@@ -38,7 +38,6 @@ RUN chown -R flutter:flutter /home/flutter/app
 USER flutter
 
 # Verificar instalação do Flutter
-RUN flutter doctor --android-licenses
 RUN flutter doctor
 
 # Copiar arquivos de dependência primeiro para aproveitar o cache
@@ -58,11 +57,16 @@ FROM nginx:stable-alpine
 COPY --from=builder /home/flutter/app/build/web /usr/share/nginx/html
 
 # Configuração do nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-RUN chmod 644 /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf.template
+RUN chmod 644 /etc/nginx/conf.d/default.conf.template
 
-# Expor porta
-EXPOSE 80
+# Script para substituir a variável PORT
+COPY <<EOF /docker-entrypoint.d/40-replace-port.sh
+#!/bin/sh
+envsubst '\${PORT}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
+EOF
+
+RUN chmod +x /docker-entrypoint.d/40-replace-port.sh
 
 # Comando para iniciar o nginx
 CMD ["nginx", "-g", "daemon off;"]
