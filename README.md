@@ -21,8 +21,8 @@ Um aplicativo Flutter para gerenciar lista de café.
 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/cafe-app.git
-cd cafe-app
+git clone https://github.com/lwl2601/lista-cafe.git
+cd lista-cafe
 ```
 
 2. Instale as dependências
