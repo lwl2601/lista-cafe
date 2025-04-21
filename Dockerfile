@@ -21,22 +21,32 @@ RUN apt-get update && apt-get install -y \
 # Configurar o fuso horário
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Instalar Flutter
-RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter
-ENV PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PATH}"
+# Criar usuário não-root
+RUN useradd -ms /bin/bash flutter
+RUN mkdir -p /home/flutter/flutter
+RUN chown -R flutter:flutter /home/flutter
 
-# Verificar instalação do Flutter
-RUN flutter doctor
+# Instalar Flutter
+RUN git clone https://github.com/flutter/flutter.git /home/flutter/flutter
+ENV PATH="/home/flutter/flutter/bin:/home/flutter/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
 # Configurar diretório de trabalho
-WORKDIR /app
+WORKDIR /home/flutter/app
+RUN chown -R flutter:flutter /home/flutter/app
+
+# Mudar para o usuário flutter
+USER flutter
+
+# Verificar instalação do Flutter
+RUN flutter doctor --android-licenses
+RUN flutter doctor
 
 # Copiar arquivos de dependência primeiro para aproveitar o cache
-COPY pubspec.yaml .
+COPY --chown=flutter:flutter pubspec.yaml .
 RUN flutter pub get
 
 # Copiar o resto do código
-COPY . .
+COPY --chown=flutter:flutter . .
 
 # Construir aplicação web em modo release
 RUN flutter build web --release
@@ -45,7 +55,7 @@ RUN flutter build web --release
 FROM nginx:stable-alpine
 
 # Copiar os arquivos construídos do estágio anterior
-COPY --from=builder /app/build/web /usr/share/nginx/html
+COPY --from=builder /home/flutter/app/build/web /usr/share/nginx/html
 
 # Configuração do nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
