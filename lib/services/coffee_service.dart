@@ -20,6 +20,12 @@ class CoffeeService extends ChangeNotifier {
   int get monthlyCoffeeContributions => _monthlyCoffeeContributions;
   int get monthlyFilterContributions => _monthlyFilterContributions;
 
+  List<Contribution> get history {
+    final allContributions = _users.expand((user) => user.history).toList();
+    allContributions.sort((a, b) => b.date.compareTo(a.date));
+    return allContributions;
+  }
+
   CoffeeService() {
     _loadData().then((_) {
       if (_users.isEmpty) {

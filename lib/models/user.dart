@@ -13,6 +13,47 @@ class User {
     List<Contribution>? history,
   }) : history = history ?? [];
 
+  void incrementCoffeeContribution() {
+    coffeeContributions++;
+    history.add(
+      Contribution(
+        date: DateTime.now(),
+        item: 'Café',
+        quantity: 1,
+      ),
+    );
+  }
+
+  void incrementFilterContribution() {
+    filterContributions++;
+    history.add(
+      Contribution(
+        date: DateTime.now(),
+        item: 'Filtro',
+        quantity: 1,
+      ),
+    );
+  }
+
+  int getMonthlyContributions(String type) {
+    final now = DateTime.now();
+    return history
+        .where((contribution) =>
+            contribution.item == type &&
+            contribution.date.month == now.month &&
+            contribution.date.year == now.year)
+        .fold(0, (sum, contribution) => sum + contribution.quantity);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'coffeeContributions': coffeeContributions,
+      'filterContributions': filterContributions,
+      'history': history.map((contribution) => contribution.toJson()).toList(),
+    };
+  }
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       name: json['name'],
@@ -22,42 +63,5 @@ class User {
           .map((item) => Contribution.fromJson(item))
           .toList(),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'coffeeContributions': coffeeContributions,
-      'filterContributions': filterContributions,
-      'history': history.map((item) => item.toJson()).toList(),
-    };
-  }
-
-  int getMonthlyContributions(String item) {
-    final now = DateTime.now();
-    return history
-        .where((contribution) =>
-            contribution.item == item &&
-            contribution.date.month == now.month &&
-            contribution.date.year == now.year)
-        .fold(0, (sum, contribution) => sum + contribution.quantity);
-  }
-
-  void incrementCoffeeContribution() {
-    coffeeContributions++;
-    history.add(Contribution(
-      date: DateTime.now(),
-      item: 'Café',
-      quantity: 1,
-    ));
-  }
-
-  void incrementFilterContribution() {
-    filterContributions++;
-    history.add(Contribution(
-      date: DateTime.now(),
-      item: 'Filtro',
-      quantity: 1,
-    ));
   }
 }
