@@ -9,3 +9,20 @@ services:
     envVars:
       - key: PORT
         value: 10000
+    buildFilter:
+      paths:
+        - lib/**
+        - pubspec.yaml
+        - pubspec.lock
+        - web/**
+        - android/**
+        - ios/**
+        - linux/**
+        - macos/**
+        - windows/**
+        - test/**
+        - .metadata
+        - analysis_options.yaml
+        - Dockerfile
+        - nginx.conf
+        - render.yaml

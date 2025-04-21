@@ -104,3 +104,13 @@ logs/
 # Arquivos de cache
 .cache/
 .temp/
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.swp
+*~
+
+# Arquivos de build
+dist/
+out/
