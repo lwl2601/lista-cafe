@@ -59,6 +59,7 @@ COPY --from=builder /home/flutter/app/build/web /usr/share/nginx/html
 
 # Configuração do nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+RUN chmod 644 /etc/nginx/conf.d/default.conf
 
 # Expor porta
 EXPOSE 80
