@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Lista do Café
 
 Um aplicativo Flutter para gerenciar lista de café.
@@ -44,3 +45,6 @@ O aplicativo está configurado para ser implantado no Render. A configuração e
 ## Licença
 
 Este projeto está licenciado sob a licença MIT - veja o arquivo LICENSE para detalhes.
+=======
+# lista-cafe
+>>>>>>> 089b1c8aa483123e7f2404b616f34d4570684c45
