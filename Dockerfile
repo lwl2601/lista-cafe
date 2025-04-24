@@ -28,7 +28,11 @@ RUN chown -R flutter:flutter /home/flutter
 
 # Instalar Flutter
 RUN git clone https://github.com/flutter/flutter.git /home/flutter/flutter
-ENV PATH="/home/flutter/flutter/bin:/home/flutter/flutter/bin/cache/dart-sdk/bin:${PATH}"
+ENV PATH="/home/flutter/flutter/bin:${PATH}"
+
+# Corrigir permissões
+RUN chown -R flutter:flutter /home/flutter/flutter
+RUN chmod -R 755 /home/flutter/flutter
 
 # Configurar diretório de trabalho
 WORKDIR /home/flutter/app
