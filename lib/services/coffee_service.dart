@@ -131,7 +131,13 @@ class CoffeeService extends ChangeNotifier {
   void addContribution(
       String userName, String item, int quantity, DateTime date) {
     final user = _users.firstWhere((user) => user.name == userName);
-    user.history.add(Contribution(date: date, item: item, quantity: quantity));
+    user.history.add(Contribution(
+      date: date,
+      item: item,
+      quantity: quantity,
+      type: item,
+      userName: userName,
+    ));
 
     if (item == 'Café') {
       user.coffeeContributions += quantity;
