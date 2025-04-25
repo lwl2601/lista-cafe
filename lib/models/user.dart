@@ -20,6 +20,8 @@ class User {
         date: DateTime.now(),
         item: 'Café',
         quantity: 1,
+        type: 'Café',
+        userName: name,
       ),
     );
   }
@@ -31,6 +33,8 @@ class User {
         date: DateTime.now(),
         item: 'Filtro',
         quantity: 1,
+        type: 'Filtro',
+        userName: name,
       ),
     );
   }
